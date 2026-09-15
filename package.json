@@ -1,0 +1,23 @@
+{
+  "name": "haline",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ocean climate companion science and data core",
+  "license": "MIT",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "test": "vitest run",
+    "type-check": "tsc --noEmit",
+    "build:backend": "node backend/build.mjs"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "3.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2",
+    "esbuild": "0.28.2",
+    "typescript": "5.9.3",
+    "vitest": "5.0.1"
+  }
+}
