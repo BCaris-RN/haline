@@ -19,6 +19,7 @@
     ]
   },
   "include": [
+    "app/**/*.ts",
     "app/**/*.tsx",
     "lib/**/*.ts",
     "backend/lambda/**/*.js",
