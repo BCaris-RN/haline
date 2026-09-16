@@ -3,21 +3,32 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "main": "expo-router/entry",
   "description": "Ocean climate companion science and data core",
   "license": "MIT",
-  "engines": { "node": ">=22.13.0" },
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "scripts": {
     "test": "vitest run",
     "type-check": "tsc --noEmit",
     "build:backend": "node backend/build.mjs"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "3.1.1"
+    "@react-native-async-storage/async-storage": "2.2.0",
+    "expo": "^57.0.23",
+    "expo-router": "~57.0.21",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-web": "^0.21.2"
   },
   "devDependencies": {
     "@types/node": "22.20.2",
     "esbuild": "0.28.2",
-    "typescript": "5.9.3",
+    "typescript": "~6.0.3",
     "vitest": "5.0.1"
   }
 }

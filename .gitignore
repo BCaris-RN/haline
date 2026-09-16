@@ -1,4 +1,5 @@
 node_modules/
+.expo/
 backend/dist/
 coverage/
 .env

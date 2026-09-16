@@ -17,6 +17,8 @@ const REFERENCES = [
 ] satisfies { species: CFCSpecies; salinity: number; kh: number }[];
 
 describe('Warner–Weiss equilibrium CFC solubility', () => {
+  test.todo('matches a published K_H table value');
+
   test.each(REFERENCES)('$species at 15°C, salinity $salinity matches the independent reference', ({ species, salinity, kh }) => {
     expect(KH(288.15, salinity, species)).toBeCloseTo(kh, 13);
     expect(lnKH(288.15, salinity, species)).toBeCloseTo(Math.log(kh), 11);

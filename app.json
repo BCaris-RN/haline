@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "Haline",
+    "slug": "haline",
+    "scheme": "haline",
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

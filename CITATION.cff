@@ -1,0 +1,31 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite these references."
+title: "Haline"
+type: software
+authors:
+  - family-names: Caris
+    given-names: Brandon W.
+repository-code: "https://github.com/BCaris-RN/haline"
+license: MIT
+references:
+  - type: article
+    authors:
+      - family-names: Caris
+        given-names: Brandon W.
+    title: "The Coupled Marine Engine Framework, Papers 1-3"
+    doi: "10.5281/zenodo.20804280"
+    publisher:
+      name: Zenodo
+  - type: article
+    authors:
+      - family-names: Warner
+        given-names: M. J.
+      - family-names: Weiss
+        given-names: R. F.
+    title: "Solubilities of chlorofluorocarbons 11 and 12 in water and seawater"
+    journal: "Deep Sea Research Part A. Oceanographic Research Papers"
+    volume: "32"
+    issue: "12"
+    start: 1485
+    end: 1497
+    year: 1985
