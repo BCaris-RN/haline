@@ -37,6 +37,13 @@ function formatMonth(record: NOAARecord): string {
   return `${record.year}-${String(record.month).padStart(2, '0')}`;
 }
 
+function formatRange(records: readonly NOAARecord[]): string {
+  const first = records[0];
+  const last = records[records.length - 1];
+  if (!first || !last) return 'Monthly range';
+  return `${formatMonth(first)} to ${formatMonth(last)}`;
+}
+
 function sourceLabel(data: NOAADataResult): string {
   if (data.source === 'unavailable') return 'Unavailable';
   if (data.isStale) return 'Stale cached NOAA data';
@@ -90,7 +97,9 @@ export default function ChartScreen() {
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.header}>
-        <Text style={styles.kicker}>2016-2025</Text>
+        <Text style={styles.kicker}>
+          {state.status === 'ready' ? formatRange(state.records) : 'Monthly range'}
+        </Text>
         <Text style={styles.title}>Monthly history</Text>
         <Text style={styles.body}>
           Warming-stripe bands from {NOAA_SOURCE.title}; each band is one monthly anomaly.
