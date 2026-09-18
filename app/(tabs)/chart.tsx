@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { fetchNOAASSTData, NOAA_SOURCE, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
 
 type ChartState =
@@ -48,7 +49,7 @@ function sourceLabel(data: NOAADataResult): string {
   if (data.source === 'unavailable') return 'Unavailable';
   if (data.isStale) return 'Stale cached NOAA data';
   if (data.source === 'cache') return 'Cached NOAA data';
-  return 'Live NOAA data';
+  return 'Verified NOAA data';
 }
 
 export default function ChartScreen() {
@@ -95,106 +96,114 @@ export default function ChartScreen() {
   }, [state]);
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Text style={styles.kicker}>
-          {state.status === 'ready' ? formatRange(state.records) : 'Monthly range'}
-        </Text>
-        <Text style={styles.title}>Monthly history</Text>
-        <Text style={styles.body}>
-          Warming-stripe bands from {NOAA_SOURCE.title}; each band is one monthly anomaly.
-        </Text>
-      </View>
-
-      {state.status === 'loading' ? (
-        <View style={styles.stateBlock}>
-          <Text style={styles.stateTitle}>Loading chart</Text>
-          <Text style={styles.stateText}>Fetching the verified NOAA monthly series.</Text>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.screen}>
+        <View style={styles.header}>
+          <Text style={styles.kicker}>
+            {state.status === 'ready' ? formatRange(state.records) : 'Monthly range'}
+          </Text>
+          <Text style={styles.title}>Monthly history</Text>
+          <Text style={styles.body}>
+            Warming-stripe bands from {NOAA_SOURCE.title}; each band is one monthly anomaly.
+          </Text>
         </View>
-      ) : state.status === 'empty' ? (
+
+        {state.status === 'loading' ? (
+          <View style={styles.stateBlock}>
+            <Text style={styles.stateTitle}>Loading chart</Text>
+            <Text style={styles.stateText}>Fetching the verified NOAA monthly series.</Text>
+          </View>
+        ) : state.status === 'empty' ? (
           <View style={styles.stateBlock}>
             <Text style={styles.stateTitle}>No chart data</Text>
             <Text style={styles.stateText}>
               The monthly range is unavailable right now. {state.data.error ?? ''}
             </Text>
           </View>
-      ) : (
-        <>
-          <View style={[styles.sourceBlock, state.data.isStale && styles.staleBlock]}>
-            <Text style={[styles.sourceLabel, state.data.isStale && styles.staleText]}>
-              {sourceLabel(state.data)}
-            </Text>
-            <Text style={styles.sourceText}>
-              {state.records.length} monthly observations, NOAA base period {state.data.metadata.baseline}.
-            </Text>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            <View style={styles.stripeWrap}>
-              {state.records.map(record => (
-                <View
-                  key={record.date}
-                  style={[
-                    styles.stripe,
-                    {
-                      backgroundColor: summary
-                        ? interpolateColor(scaleValue(record.value, summary.min, summary.max))
-                        : '#ef4444',
-                      height: summary
-                        ? 16 + scaleValue(record.value, summary.min, summary.max) * (CHART_HEIGHT - 16)
-                        : CHART_HEIGHT / 2,
-                    },
-                  ]}
-                  accessibilityLabel={`${formatMonth(record)} anomaly ${record.value.toFixed(2)} degrees Celsius`}
-                />
-              ))}
+        ) : (
+          <>
+            <View style={[styles.sourceBlock, state.data.isStale && styles.staleBlock]}>
+              <Text style={[styles.sourceLabel, state.data.isStale && styles.staleText]}>
+                {sourceLabel(state.data)}
+              </Text>
+              <Text style={styles.sourceText}>
+                {state.records.length} monthly observations, NOAA base period {state.data.metadata.baseline}.
+              </Text>
             </View>
-          </ScrollView>
 
-          {summary ? (
-            <View style={styles.summary}>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Average anomaly</Text>
-                <Text style={styles.summaryValue}>{summary.average.toFixed(2)}°C</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              <View style={styles.stripeWrap}>
+                {state.records.map(record => (
+                  <View
+                    key={record.date}
+                    style={[
+                      styles.stripe,
+                      {
+                        backgroundColor: summary
+                          ? interpolateColor(scaleValue(record.value, summary.min, summary.max))
+                          : '#ef4444',
+                        height: summary
+                          ? 16 + scaleValue(record.value, summary.min, summary.max) * (CHART_HEIGHT - 16)
+                          : CHART_HEIGHT / 2,
+                      },
+                    ]}
+                    accessibilityLabel={`${formatMonth(record)} anomaly ${record.value.toFixed(2)} degrees Celsius`}
+                  />
+                ))}
               </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Warmest month</Text>
-                <Text style={styles.summaryValue}>{formatMonth(summary.warmest)}</Text>
-                <Text style={styles.summaryMeta}>{summary.warmest.value.toFixed(2)}°C</Text>
+            </ScrollView>
+
+            {summary ? (
+              <View style={styles.summary}>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryLabel}>Average anomaly</Text>
+                  <Text style={styles.summaryValue}>{summary.average.toFixed(2)}°C</Text>
+                </View>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryLabel}>Warmest month</Text>
+                  <Text style={styles.summaryValue}>{formatMonth(summary.warmest)}</Text>
+                  <Text style={styles.summaryMeta}>{summary.warmest.value.toFixed(2)}°C</Text>
+                </View>
+                <View style={styles.summaryItem}>
+                  <Text style={styles.summaryLabel}>Coolest month</Text>
+                  <Text style={styles.summaryValue}>{formatMonth(summary.coolest)}</Text>
+                  <Text style={styles.summaryMeta}>{summary.coolest.value.toFixed(2)}°C</Text>
+                </View>
               </View>
-              <View style={styles.summaryItem}>
-                <Text style={styles.summaryLabel}>Coolest month</Text>
-                <Text style={styles.summaryValue}>{formatMonth(summary.coolest)}</Text>
-                <Text style={styles.summaryMeta}>{summary.coolest.value.toFixed(2)}°C</Text>
-              </View>
+            ) : null}
+
+            <View style={styles.legend}>
+              <Text style={styles.legendText}>Cooler</Text>
+              <View style={[styles.legendSwatch, { backgroundColor: '#1d4ed8' }]} />
+              <View style={[styles.legendSwatch, { backgroundColor: '#f8fafc' }]} />
+              <View style={[styles.legendSwatch, { backgroundColor: '#b91c1c' }]} />
+              <Text style={styles.legendText}>Warmer</Text>
             </View>
-          ) : null}
-
-          <View style={styles.legend}>
-            <Text style={styles.legendText}>Cooler</Text>
-            <View style={[styles.legendSwatch, { backgroundColor: '#1d4ed8' }]} />
-            <View style={[styles.legendSwatch, { backgroundColor: '#f8fafc' }]} />
-            <View style={[styles.legendSwatch, { backgroundColor: '#b91c1c' }]} />
-            <Text style={styles.legendText}>Warmer</Text>
-          </View>
-        </>
-      )}
-    </ScrollView>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#f8fafc',
+    flex: 1,
+  },
   screen: {
     alignSelf: 'center',
-    flexGrow: 1,
-    maxWidth: 760,
-    padding: 24,
     backgroundColor: '#f8fafc',
+    flexGrow: 1,
     gap: 24,
+    maxWidth: 760,
+    paddingBottom: 96,
+    paddingHorizontal: 24,
+    paddingTop: 24,
     width: '100%',
   },
   header: {
-    marginTop: 36,
+    marginTop: 12,
   },
   kicker: {
     color: '#475569',
@@ -258,7 +267,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     flexDirection: 'row',
     height: CHART_HEIGHT,
-    minWidth: 720,
+    minWidth: 840,
   },
   stripe: {
     marginRight: 1,
@@ -292,6 +301,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   legendSwatch: {
+    borderColor: '#cbd5e1',
+    borderWidth: 1,
     height: 14,
     width: 28,
   },

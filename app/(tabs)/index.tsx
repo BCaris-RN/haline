@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { calculateCFCBias } from '../../lib/cfcBias';
 import { fetchNOAASSTData, getLatestRecord, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
 
@@ -84,80 +85,88 @@ export default function DashboardScreen() {
     : null;
 
   return (
-    <ScrollView contentContainerStyle={styles.screen}>
-      <View style={styles.header}>
-        <Text style={styles.kicker}>Global ocean signal</Text>
-        <Text style={styles.title}>Dashboard</Text>
-        <Text style={styles.body}>
-          Monthly NOAA anomaly translated into a modeled thermal solubility proxy.
-        </Text>
-      </View>
-
-      {state.status === 'loading' ? (
-        <View style={styles.statusPanel}>
-          <Text style={styles.statusLabel}>Loading NOAA data</Text>
-          <Text style={styles.statusText}>Checking the latest verified global ocean monthly product.</Text>
-        </View>
-      ) : (
-        <View style={[styles.statusPanel, state.data.isStale && styles.stalePanel]}>
-          <Text style={[styles.statusLabel, state.data.isStale && styles.staleText]}>
-            {sourceLabel(state.data)}
-          </Text>
-          <Text style={styles.statusText}>{sourceDetail(state.data)}</Text>
-        </View>
-      )}
-
-      {isReady && cfcShift !== null ? (
-        <View style={styles.metrics}>
-          <View style={styles.metricBlock}>
-            <Text style={styles.metricLabel}>NOAA anomaly</Text>
-            <Text style={styles.metricValue}>{state.latest.value.toFixed(2)}°C</Text>
-            <Text style={styles.metricMeta}>{formatMonth(state.latest)}</Text>
-          </View>
-
-          <View style={styles.metricBlock}>
-            <Text style={styles.metricLabel}>CFC solubility shift %</Text>
-            <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
-            <Text style={styles.metricMeta}>Average of CFC-11 and CFC-12</Text>
-          </View>
-
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>NOAA base period</Text>
-            <Text style={styles.detailValue}>{state.data.metadata.baseline}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Source month</Text>
-            <Text style={styles.detailValue}>{formatMonth(state.latest)}</Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Cache fetched</Text>
-            <Text style={styles.detailValue}>{formatFetchedAt(state.data.fetchedAt)}</Text>
-          </View>
-        </View>
-      ) : state.status === 'unavailable' ? (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyTitle}>Data unavailable</Text>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
+      <ScrollView contentContainerStyle={styles.screen}>
+        <View style={styles.header}>
+          <Text style={styles.kicker}>Global ocean signal</Text>
+          <Text style={styles.title}>Dashboard</Text>
           <Text style={styles.body}>
-            Haline could not load a current NOAA record and has no verified cached value to display.
+            Monthly NOAA anomaly translated into a modeled thermal solubility proxy.
           </Text>
         </View>
-      ) : null}
-    </ScrollView>
+
+        {state.status === 'loading' ? (
+          <View style={styles.statusPanel}>
+            <Text style={styles.statusLabel}>Loading NOAA data</Text>
+            <Text style={styles.statusText}>Checking the latest verified global ocean monthly product.</Text>
+          </View>
+        ) : (
+          <View style={[styles.statusPanel, state.data.isStale && styles.stalePanel]}>
+            <Text style={[styles.statusLabel, state.data.isStale && styles.staleText]}>
+              {sourceLabel(state.data)}
+            </Text>
+            <Text style={styles.statusText}>{sourceDetail(state.data)}</Text>
+          </View>
+        )}
+
+        {isReady && cfcShift !== null ? (
+          <View style={styles.metrics}>
+            <View style={styles.metricBlock}>
+              <Text style={styles.metricLabel}>NOAA anomaly</Text>
+              <Text style={styles.metricValue}>{state.latest.value.toFixed(2)}°C</Text>
+              <Text style={styles.metricMeta}>{formatMonth(state.latest)}</Text>
+            </View>
+
+            <View style={styles.metricBlock}>
+              <Text style={styles.metricLabel}>CFC solubility shift %</Text>
+              <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
+              <Text style={styles.metricMeta}>Average of CFC-11 and CFC-12</Text>
+            </View>
+
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>NOAA base period</Text>
+              <Text style={styles.detailValue}>{state.data.metadata.baseline}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Source month</Text>
+              <Text style={styles.detailValue}>{formatMonth(state.latest)}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Cache fetched</Text>
+              <Text style={styles.detailValue}>{formatFetchedAt(state.data.fetchedAt)}</Text>
+            </View>
+          </View>
+        ) : state.status === 'unavailable' ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyTitle}>Data unavailable</Text>
+            <Text style={styles.body}>
+              Haline could not load a current NOAA record and has no verified cached value to display.
+            </Text>
+          </View>
+        ) : null}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: '#f8fafc',
+    flex: 1,
+  },
   screen: {
     alignSelf: 'center',
     flexGrow: 1,
     maxWidth: 760,
-    padding: 24,
+    paddingHorizontal: 24,
+    paddingBottom: 96,
+    paddingTop: 24,
     backgroundColor: '#f8fafc',
     gap: 24,
     width: '100%',
   },
   header: {
-    marginTop: 36,
+    marginTop: 12,
   },
   kicker: {
     color: '#475569',
