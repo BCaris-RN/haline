@@ -16,8 +16,11 @@ function formatMonth(record: NOAARecord): string {
 function formatFetchedAt(value: number | null): string {
   if (value === null) return 'No successful fetch yet';
   return new Intl.DateTimeFormat('en-US', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
     timeZoneName: 'short',
   }).format(new Date(value));
 }
