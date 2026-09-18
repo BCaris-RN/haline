@@ -14,6 +14,11 @@ function formatMonth(record: NOAARecord): string {
     .format(new Date(Date.UTC(record.year, record.month - 1, 1)));
 }
 
+function formatNextObservationMonth(record: NOAARecord): string {
+  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(Date.UTC(record.year, record.month, 1)));
+}
+
 function formatFetchedAt(value: number | null): string {
   if (value === null) return 'No successful fetch yet';
   return new Intl.DateTimeFormat('en-US', {
@@ -30,7 +35,7 @@ function sourceLabel(data: NOAADataResult): string {
   if (data.source === 'unavailable') return 'Unavailable';
   if (data.isStale) return 'Stale cached NOAA data';
   if (data.source === 'cache') return 'Cached NOAA data';
-  return 'Live NOAA data';
+  return 'Verified NOAA data';
 }
 
 function sourceDetail(data: NOAADataResult): string {
@@ -120,7 +125,9 @@ export default function DashboardScreen() {
             <View style={styles.metricBlock}>
               <Text style={styles.metricLabel}>CFC solubility shift %</Text>
               <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
-              <Text style={styles.metricMeta}>Average of CFC-11 and CFC-12</Text>
+              <Text style={styles.metricMeta}>
+                Average of CFC-11 and CFC-12; vs 15°C, salinity 35 baseline
+              </Text>
             </View>
 
             <View style={styles.detailRow}>
@@ -134,6 +141,10 @@ export default function DashboardScreen() {
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Cache fetched</Text>
               <Text style={styles.detailValue}>{formatFetchedAt(state.data.fetchedAt)}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Expected next update</Text>
+              <Text style={styles.detailValue}>{formatNextObservationMonth(state.latest)} observation</Text>
             </View>
           </View>
         ) : state.status === 'unavailable' ? (
