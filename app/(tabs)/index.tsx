@@ -1,27 +1,157 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { calculateCFCBias } from '../../lib/cfcBias';
+import { fetchNOAASSTData, getLatestRecord, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
 
-const SAMPLE_ANOMALY_C = 1.08;
-const sampleShift = calculateCFCBias(SAMPLE_ANOMALY_C).average_reduction_percent;
+type DashboardState =
+  | { status: 'loading' }
+  | { status: 'ready'; data: NOAADataResult; latest: NOAARecord }
+  | { status: 'unavailable'; data: NOAADataResult };
+
+function formatMonth(record: NOAARecord): string {
+  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+    .format(new Date(Date.UTC(record.year, record.month - 1, 1)));
+}
+
+function formatFetchedAt(value: number | null): string {
+  if (value === null) return 'No successful fetch yet';
+  return new Intl.DateTimeFormat('en-US', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZoneName: 'short',
+  }).format(new Date(value));
+}
+
+function sourceLabel(data: NOAADataResult): string {
+  if (data.source === 'unavailable') return 'Unavailable';
+  if (data.isStale) return 'Stale cached NOAA data';
+  if (data.source === 'cache') return 'Cached NOAA data';
+  return 'Live NOAA data';
+}
+
+function sourceDetail(data: NOAADataResult): string {
+  if (data.source === 'unavailable') {
+    return data.error ? `NOAA data unavailable: ${data.error}` : 'NOAA data unavailable.';
+  }
+  if (data.isStale) {
+    return data.error
+      ? `Showing stale cached data because the refresh failed: ${data.error}`
+      : 'Showing stale cached data; refresh when a network connection is available.';
+  }
+  if (data.source === 'cache') return 'Using a verified cache less than 24 hours old.';
+  return data.cacheWarning ?? 'Fetched from NOAA and verified against the expected product metadata.';
+}
 
 export default function DashboardScreen() {
+  const [state, setState] = useState<DashboardState>({ status: 'loading' });
+
+  useEffect(() => {
+    let mounted = true;
+    fetchNOAASSTData()
+      .then((data) => {
+        if (!mounted) return;
+        const latest = getLatestRecord(data.records);
+        setState(latest ? { status: 'ready', data, latest } : { status: 'unavailable', data });
+      })
+      .catch((error: unknown) => {
+        if (!mounted) return;
+        setState({
+          status: 'unavailable',
+          data: {
+            records: [],
+            source: 'unavailable',
+            isStale: true,
+            fetchedAt: null,
+            metadata: {
+              id: 'ncei-cag-global-ocean-monthly-1901-2000-v1',
+              title: 'Global Ocean Average Temperature Departures',
+              units: 'Degrees Celsius',
+              baseline: '1901-2000',
+            },
+            error: error instanceof Error ? error.message : 'NOAA data unavailable.',
+          },
+        });
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  const isReady = state.status === 'ready';
+  const cfcShift = isReady
+    ? calculateCFCBias(state.latest.value).average_reduction_percent
+    : null;
+
   return (
-    <View style={styles.screen}>
-      <Text style={styles.kicker}>Latest placeholder</Text>
-      <Text style={styles.title}>Dashboard</Text>
-      <Text style={styles.metricLabel}>CFC solubility shift %</Text>
-      <Text style={styles.metricValue}>{sampleShift.toFixed(2)}%</Text>
-      <Text style={styles.body}>NOAA live data wiring comes next. This screen imports the science model from lib directly.</Text>
-    </View>
+    <ScrollView contentContainerStyle={styles.screen}>
+      <View style={styles.header}>
+        <Text style={styles.kicker}>Global ocean signal</Text>
+        <Text style={styles.title}>Dashboard</Text>
+        <Text style={styles.body}>
+          Monthly NOAA anomaly translated into a modeled thermal solubility proxy.
+        </Text>
+      </View>
+
+      {state.status === 'loading' ? (
+        <View style={styles.statusPanel}>
+          <Text style={styles.statusLabel}>Loading NOAA data</Text>
+          <Text style={styles.statusText}>Checking the latest verified global ocean monthly product.</Text>
+        </View>
+      ) : (
+        <View style={[styles.statusPanel, state.data.isStale && styles.stalePanel]}>
+          <Text style={[styles.statusLabel, state.data.isStale && styles.staleText]}>
+            {sourceLabel(state.data)}
+          </Text>
+          <Text style={styles.statusText}>{sourceDetail(state.data)}</Text>
+        </View>
+      )}
+
+      {isReady && cfcShift !== null ? (
+        <View style={styles.metrics}>
+          <View style={styles.metricBlock}>
+            <Text style={styles.metricLabel}>NOAA anomaly</Text>
+            <Text style={styles.metricValue}>{state.latest.value.toFixed(2)}°C</Text>
+            <Text style={styles.metricMeta}>{formatMonth(state.latest)}</Text>
+          </View>
+
+          <View style={styles.metricBlock}>
+            <Text style={styles.metricLabel}>CFC solubility shift %</Text>
+            <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
+            <Text style={styles.metricMeta}>Average of CFC-11 and CFC-12</Text>
+          </View>
+
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>NOAA base period</Text>
+            <Text style={styles.detailValue}>{state.data.metadata.baseline}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Source month</Text>
+            <Text style={styles.detailValue}>{formatMonth(state.latest)}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Text style={styles.detailLabel}>Cache fetched</Text>
+            <Text style={styles.detailValue}>{formatFetchedAt(state.data.fetchedAt)}</Text>
+          </View>
+        </View>
+      ) : state.status === 'unavailable' ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>Data unavailable</Text>
+          <Text style={styles.body}>
+            Haline could not load a current NOAA record and has no verified cached value to display.
+          </Text>
+        </View>
+      ) : null}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 1,
     padding: 24,
     backgroundColor: '#f8fafc',
+    gap: 24,
+  },
+  header: {
+    marginTop: 36,
   },
   kicker: {
     color: '#475569',
@@ -50,6 +180,71 @@ const styles = StyleSheet.create({
     color: '#475569',
     fontSize: 16,
     lineHeight: 24,
-    marginTop: 24,
+    marginTop: 16,
+  },
+  statusPanel: {
+    borderLeftColor: '#0284c7',
+    borderLeftWidth: 4,
+    paddingLeft: 16,
+  },
+  stalePanel: {
+    borderLeftColor: '#b45309',
+  },
+  statusLabel: {
+    color: '#075985',
+    fontSize: 14,
+    fontWeight: '700',
+    textTransform: 'uppercase',
+  },
+  staleText: {
+    color: '#92400e',
+  },
+  statusText: {
+    color: '#334155',
+    fontSize: 15,
+    lineHeight: 22,
+    marginTop: 6,
+  },
+  metrics: {
+    gap: 22,
+  },
+  metricBlock: {
+    borderTopColor: '#cbd5e1',
+    borderTopWidth: 1,
+    paddingTop: 18,
+  },
+  metricMeta: {
+    color: '#64748b',
+    fontSize: 14,
+    marginTop: 6,
+  },
+  detailRow: {
+    alignItems: 'baseline',
+    borderTopColor: '#e2e8f0',
+    borderTopWidth: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 14,
+  },
+  detailLabel: {
+    color: '#64748b',
+    fontSize: 14,
+  },
+  detailValue: {
+    color: '#0f172a',
+    fontSize: 15,
+    fontWeight: '600',
+    marginLeft: 16,
+    textAlign: 'right',
+  },
+  emptyState: {
+    borderTopColor: '#cbd5e1',
+    borderTopWidth: 1,
+    paddingTop: 20,
+  },
+  emptyTitle: {
+    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '700',
   },
 });
