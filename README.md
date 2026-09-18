@@ -8,6 +8,10 @@ Related published research by Brandon W. Caris:
 [The Coupled Marine Engine Framework, Papers 1–3](https://doi.org/10.5281/zenodo.20804280).
 This Zenodo collection is a **preprint**.
 
+## Where this is going
+
+Haline adds one tested calculation or data source per release; see [docs/ROADMAP.md](docs/ROADMAP.md).
+
 ## Local checks
 
 Use Node.js 22.13 or later (validated locally with Node.js 22.17.1):
