@@ -16,7 +16,7 @@ The governing rule: **one new calculation or data source per release.** Every nu
 - Weekly notification when NOAA publishes new data
 - Method, sources, and citation documented in-app
 
-The headline figure is a **modeled thermal solubility proxy**. It is not an observed ocean gas value, and it is not a gas-exchange estimate. See [`docs/science-and-data.md`](./science-and-data.md) for the full method and its limits.
+The headline figure is a **modeled thermal solubility proxy**. It is not a measurement of ocean gas uptake, and it is not a flux estimate. See [`docs/science-and-data.md`](./science-and-data.md) for the full method and its limits.
 
 ---
 
@@ -29,7 +29,7 @@ Every release below passes all six steps before it ships. No exceptions, includi
 3. **Domain validation.** Inputs are checked against the fit's stated valid range. Out-of-range values are rejected loudly, never silently clamped.
 4. **Cross-implementation check.** Agreement with an independent implementation to a documented tolerance.
 5. **Documentation in the same commit.** Method docs and in-app method text update alongside the code, never afterward.
-6. **Claim language review.** A proxy stays a proxy. No modeled quantity is described as an observed ocean value in the interface, notifications, or store listing.
+6. **Claim language review.** A proxy stays a proxy. No modeled quantity is described as a measurement in the interface, notifications, or store listing.
 
 ---
 

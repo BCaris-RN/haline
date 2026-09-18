@@ -43,8 +43,8 @@ export default function AboutScreen() {
           <Text style={styles.sectionTitle}>Method summary</Text>
           <Text style={styles.body}>
             The dashboard applies Warner & Weiss solubility coefficients at a fixed 15°C, salinity-35 baseline, then reports the
-            relative change as a modeled thermal solubility proxy. It is not an observed ocean value, a gas-exchange estimate,
-            or a source-attribution inversion.
+            relative change as a modeled thermal solubility proxy. It is not a direct measurement of ocean gas uptake, not a flux
+            estimate, and not an emissions inversion.
           </Text>
         </View>
 
