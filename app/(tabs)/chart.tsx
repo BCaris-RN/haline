@@ -9,7 +9,7 @@ type ChartState =
   | { status: 'empty'; data: NOAADataResult };
 
 const SERIES_LENGTH = 120;
-const CHART_HEIGHT = 148;
+const CHART_HEIGHT = 220;
 
 function latestRecords(records: readonly NOAARecord[], count: number): NOAARecord[] {
   return [...records]
@@ -138,7 +138,7 @@ export default function ChartScreen() {
               </Text>
             </View>
 
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chartScroll}>
               <View style={styles.stripeWrap}>
                 {state.records.map(record => (
                   <View
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     backgroundColor: '#f8fafc',
     flexGrow: 1,
-    gap: 24,
+    gap: 20,
     maxWidth: 760,
     paddingBottom: 96,
     paddingHorizontal: 24,
@@ -275,6 +275,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: CHART_HEIGHT,
     minWidth: 840,
+  },
+  chartScroll: {
+    flexGrow: 0,
+    maxHeight: CHART_HEIGHT + 8,
   },
   stripe: {
     marginRight: 1,
