@@ -3,6 +3,18 @@
     "name": "Haline",
     "slug": "haline",
     "scheme": "haline",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#01050b"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#01050b"
+      }
+    },
     "plugins": [
       "expo-router"
     ]
