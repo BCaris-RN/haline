@@ -115,10 +115,6 @@ export function createWeeklyNotificationHandler({
     if (!noaa) throw new Error('NOAA returned no usable monthly ocean observations.');
 
     const cfcBias = calculateCFCBias(noaa.value);
-    const change = cfcBias.average_reduction_percent;
-    const direction = change < 0 ? 'higher' : 'lower';
-    const modeledChange = Math.abs(change) < 0.05 ? 'unchanged' : `${Math.abs(change).toFixed(1)}% ${direction}`;
-    const signedAnomaly = `${noaa.value >= 0 ? '+' : ''}${noaa.value.toFixed(2)}`;
     const month = noaa.date.slice(0, 7);
 
     const payload = {
@@ -126,9 +122,9 @@ export function createWeeklyNotificationHandler({
       target_channel: 'push',
       included_segments: ['Subscribed Users'],
       idempotency_key: idempotencyKey,
-      headings: { en: `🌊 Ocean anomaly: ${signedAnomaly}°C` },
+      headings: { en: '🌊 NOAA monthly ocean context' },
       contents: {
-        en: `Modeled CFC-11/12 solubility: ${modeledChange}. NOAA ${month}; fixed salinity, 15°C model baseline.`,
+        en: `Latest NOAA month: ${month}. Haline reports a modeled thermal solubility proxy, not a measurement, at fixed salinity and a 15°C baseline. NOAA updates monthly, so weekly notes may repeat context until a new observation posts.`,
       },
       data: {
         measurement_month: month,

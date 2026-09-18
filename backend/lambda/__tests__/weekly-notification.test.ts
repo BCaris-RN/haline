@@ -56,9 +56,11 @@ describe('weekly NOAA notification', () => {
     });
     expect(payload).not.toHaveProperty('include_external_user_ids');
     expect(payload).not.toHaveProperty('delivery_time_of_day');
-    expect(payload.contents.en).toContain('Modeled CFC-11/12 solubility:');
-    expect(payload.contents.en).toContain('NOAA 2026-08');
+    expect(payload.headings.en).toBe('🌊 NOAA monthly ocean context');
+    expect(payload.contents.en).toContain('Latest NOAA month: 2026-08');
+    expect(payload.contents.en).toContain('modeled thermal solubility proxy, not a measurement');
     expect(payload.contents.en).toContain('fixed salinity');
+    expect(payload.contents.en).toContain('NOAA updates monthly');
     expect(result).toMatchObject({
       noaa: { year: 2026, month: 8, value: 1.08 },
       cfcBias: calculateCFCBias(1.08),
@@ -72,16 +74,17 @@ describe('weekly NOAA notification', () => {
     const result = await handler(EVENT);
     const payload = JSON.parse(String(fetchImpl.mock.calls[1][1]?.body));
     expect(result.cfcBias.average_reduction_percent).toBeLessThan(0);
-    expect(payload.headings.en).toContain('-0.50°C');
+    expect(payload.headings.en).not.toContain('-0.50°C');
     expect(payload.headings.en).not.toContain('+-');
-    expect(payload.contents.en).toContain('higher');
+    expect(payload.contents.en).not.toContain('higher');
   });
 
-  test('reports zero modeled change as unchanged', async () => {
+  test('keeps zero modeled change out of the weekly copy', async () => {
     const { fetchImpl, handler } = setup(0);
     await handler(EVENT);
     const payload = JSON.parse(String(fetchImpl.mock.calls[1][1]?.body));
-    expect(payload.contents.en).toContain('unchanged');
+    expect(payload.contents.en).not.toContain('unchanged');
+    expect(payload.contents.en).toContain('modeled thermal solubility proxy');
   });
 
   test.each([
