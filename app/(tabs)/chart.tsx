@@ -34,6 +34,11 @@ function scaleValue(value: number, min: number, max: number): number {
   return (value - min) / (max - min);
 }
 
+function colorValue(value: number, maxAbs: number): string {
+  if (maxAbs === 0) return interpolateColor(0.5);
+  return interpolateColor((value / maxAbs + 1) / 2);
+}
+
 function formatMonth(record: NOAARecord): string {
   return `${record.year}-${String(record.month).padStart(2, '0')}`;
 }
@@ -86,12 +91,14 @@ export default function ChartScreen() {
     const min = Math.min(...values);
     const max = Math.max(...values);
     const padding = Math.max(0.05, (max - min) * 0.12);
+    const maxAbs = Math.max(Math.abs(min), Math.abs(max), 0.01);
     return {
       warmest: state.records.reduce((best, record) => record.value > best.value ? record : best),
       coolest: state.records.reduce((best, record) => record.value < best.value ? record : best),
       average: values.reduce((total, value) => total + value, 0) / values.length,
       min: min - padding,
       max: max + padding,
+      maxAbs,
     };
   }, [state]);
 
@@ -140,7 +147,7 @@ export default function ChartScreen() {
                       styles.stripe,
                       {
                         backgroundColor: summary
-                          ? interpolateColor(scaleValue(record.value, summary.min, summary.max))
+                          ? colorValue(record.value, summary.maxAbs)
                           : '#ef4444',
                         height: summary
                           ? 16 + scaleValue(record.value, summary.min, summary.max) * (CHART_HEIGHT - 16)
@@ -173,11 +180,11 @@ export default function ChartScreen() {
             ) : null}
 
             <View style={styles.legend}>
-              <Text style={styles.legendText}>Cooler</Text>
+              <Text style={styles.legendText}>Below 0°C</Text>
               <View style={[styles.legendSwatch, { backgroundColor: '#1d4ed8' }]} />
               <View style={[styles.legendSwatch, { backgroundColor: '#f8fafc' }]} />
               <View style={[styles.legendSwatch, { backgroundColor: '#b91c1c' }]} />
-              <Text style={styles.legendText}>Warmer</Text>
+              <Text style={styles.legendText}>Above 0°C</Text>
             </View>
           </>
         )}
