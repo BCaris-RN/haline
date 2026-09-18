@@ -2,6 +2,7 @@
   "expo": {
     "name": "Haline",
     "slug": "haline",
+    "version": "1.0.0",
     "scheme": "haline",
     "icon": "./assets/icon.png",
     "splash": {
@@ -13,6 +14,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#01050b"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "com.bcaris.haline",
+      "buildNumber": "1",
+      "supportsTablet": false,
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
       }
     },
     "plugins": [
