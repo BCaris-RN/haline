@@ -28,7 +28,7 @@ At an assumed temperature of 288.15 K (15°C), salinity 35:
 | K_H after +1.0228°C | 0.010844837144068125 | 0.002944551621978831 |
 | Relative solubility reduction (%) | 4.854499005057178 | 4.2884080510958045 |
 
-These are independent numerical regression references, not measured fluxes.
+These are independent numerical regression references, not observed gas-exchange values.
 The original 4.3% CFC-11 test expectation does not follow from its supplied
 15°C baseline and +1.0228°C perturbation. The implementation retains the requested
 coefficients and baseline and corrects the expected values.
@@ -44,16 +44,16 @@ research by Brandon W. Caris without asserting peer review.
 Paper 1, Section 2.3, pp.5–6, includes the same coefficients. Its illustrative
 20→21°C calculation at salinity 35 yields about 4.33% and 3.82% solubility
 reductions; tests independently reproduce that example. Section 3, p.7, reports
-different August 2023 **dynamic uptake-efficiency** reductions: 16.51% and 13.88%.
-Those use paired fluxes, `100 * (1 - |F_forced| / |F_control|)`. They cannot be
+different August 2023 **dynamic gas-exchange-efficiency** reductions: 16.51% and 13.88%.
+Those use paired modeled exchange terms, `100 * (1 - |F_forced| / |F_control|)`. They cannot be
 validated by a ratio of equilibrium solubilities alone. Section 4.1 concerns
 integrated atmospheric mass shifts; the supplied section title was incorrect.
 
-The public API name `cfcUptakeReductionPercent` is retained for compatibility,
+The legacy public API name is retained for compatibility,
 but documentation and notifications call its output a **modeled thermal
 solubility proxy**. Fixed salinity does not simulate haline capping, gas transfer,
-circulation, inventories or emissions. The arithmetic mean of the two species
-is an unweighted display summary, not a combined flux. Cooling gives negative
+circulation, inventories or source-attribution terms. The arithmetic mean of the two species
+is an unweighted display summary, not a combined gas-exchange term. Cooling gives negative
 reduction (higher solubility); it is not clamped to zero.
 
 The brief's future `([OH]_dynamic / [OH]_baseline - 1) * 100` reports percent OH
@@ -84,7 +84,7 @@ The response has metadata plus an object keyed by `YYYYMM`:
 }
 ```
 
-The live response contained 2,120 observations from January 1850 through August
+The verified response contained 2,120 observations from January 1850 through August
 2026. Unpublished months were omitted. Its August 2023 value was **1.02°C**, not
 the preprint's higher-precision 1.0228°C input. Keep those separate in tests.
 The parser validates the product title, degrees-Celsius units and **1901–2000**
