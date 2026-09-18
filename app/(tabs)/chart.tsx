@@ -1,19 +1,36 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import { fetchNOAASSTData, getAnomaliesBetween, NOAA_SOURCE, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
+import { fetchNOAASSTData, NOAA_SOURCE, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
 
 type ChartState =
   | { status: 'loading' }
   | { status: 'ready'; data: NOAADataResult; records: NOAARecord[] }
   | { status: 'empty'; data: NOAADataResult };
 
-function stripeColor(value: number): string {
-  if (value < -0.5) return '#1d4ed8';
-  if (value < -0.25) return '#3b82f6';
-  if (value < 0) return '#93c5fd';
-  if (value < 0.5) return '#fca5a5';
-  if (value < 1) return '#ef4444';
-  return '#991b1b';
+const SERIES_LENGTH = 120;
+const CHART_HEIGHT = 148;
+
+function latestRecords(records: readonly NOAARecord[], count: number): NOAARecord[] {
+  return [...records]
+    .sort((a, b) => a.year - b.year || a.month - b.month)
+    .slice(-count);
+}
+
+function interpolateColor(t: number): string {
+  const cool = { t: 0, color: [37, 99, 235] as [number, number, number] };
+  const middle = { t: 0.5, color: [248, 250, 252] as [number, number, number] };
+  const warm = { t: 1, color: [185, 28, 28] as [number, number, number] };
+  const clamped = Math.max(0, Math.min(1, t));
+  const from = clamped <= 0.5 ? cool : middle;
+  const to = clamped <= 0.5 ? middle : warm;
+  const localT = (clamped - from.t) / (to.t - from.t);
+  const channel = (index: 0 | 1 | 2) => Math.round(from.color[index] + (to.color[index] - from.color[index]) * localT);
+  return `rgb(${channel(0)}, ${channel(1)}, ${channel(2)})`;
+}
+
+function scaleValue(value: number, min: number, max: number): number {
+  if (max === min) return 0.5;
+  return (value - min) / (max - min);
 }
 
 function formatMonth(record: NOAARecord): string {
@@ -35,7 +52,7 @@ export default function ChartScreen() {
     fetchNOAASSTData()
       .then((data) => {
         if (!mounted) return;
-        const records = getAnomaliesBetween(data.records, 2016, 2025);
+        const records = latestRecords(data.records, SERIES_LENGTH);
         setState(records.length > 0 ? { status: 'ready', data, records } : { status: 'empty', data });
       })
       .catch((error: unknown) => {
@@ -58,10 +75,15 @@ export default function ChartScreen() {
   const summary = useMemo(() => {
     if (state.status !== 'ready') return null;
     const values = state.records.map(record => record.value);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = Math.max(0.05, (max - min) * 0.12);
     return {
       warmest: state.records.reduce((best, record) => record.value > best.value ? record : best),
       coolest: state.records.reduce((best, record) => record.value < best.value ? record : best),
       average: values.reduce((total, value) => total + value, 0) / values.length,
+      min: min - padding,
+      max: max + padding,
     };
   }, [state]);
 
@@ -81,12 +103,12 @@ export default function ChartScreen() {
           <Text style={styles.stateText}>Fetching the verified NOAA monthly series.</Text>
         </View>
       ) : state.status === 'empty' ? (
-        <View style={styles.stateBlock}>
-          <Text style={styles.stateTitle}>No chart data</Text>
-          <Text style={styles.stateText}>
-            The 2016-2025 monthly range is unavailable right now. {state.data.error ?? ''}
-          </Text>
-        </View>
+          <View style={styles.stateBlock}>
+            <Text style={styles.stateTitle}>No chart data</Text>
+            <Text style={styles.stateText}>
+              The monthly range is unavailable right now. {state.data.error ?? ''}
+            </Text>
+          </View>
       ) : (
         <>
           <View style={[styles.sourceBlock, state.data.isStale && styles.staleBlock]}>
@@ -106,8 +128,12 @@ export default function ChartScreen() {
                   style={[
                     styles.stripe,
                     {
-                      backgroundColor: stripeColor(record.value),
-                      height: 82 + Math.min(38, Math.max(0, record.value) * 20),
+                      backgroundColor: summary
+                        ? interpolateColor(scaleValue(record.value, summary.min, summary.max))
+                        : '#ef4444',
+                      height: summary
+                        ? 16 + scaleValue(record.value, summary.min, summary.max) * (CHART_HEIGHT - 16)
+                        : CHART_HEIGHT / 2,
                     },
                   ]}
                   accessibilityLabel={`${formatMonth(record)} anomaly ${record.value.toFixed(2)} degrees Celsius`}
@@ -138,9 +164,8 @@ export default function ChartScreen() {
           <View style={styles.legend}>
             <Text style={styles.legendText}>Cooler</Text>
             <View style={[styles.legendSwatch, { backgroundColor: '#1d4ed8' }]} />
-            <View style={[styles.legendSwatch, { backgroundColor: '#93c5fd' }]} />
-            <View style={[styles.legendSwatch, { backgroundColor: '#fca5a5' }]} />
-            <View style={[styles.legendSwatch, { backgroundColor: '#991b1b' }]} />
+            <View style={[styles.legendSwatch, { backgroundColor: '#f8fafc' }]} />
+            <View style={[styles.legendSwatch, { backgroundColor: '#b91c1c' }]} />
             <Text style={styles.legendText}>Warmer</Text>
           </View>
         </>
@@ -223,12 +248,12 @@ const styles = StyleSheet.create({
     borderBottomColor: '#334155',
     borderBottomWidth: 1,
     flexDirection: 'row',
-    height: 132,
+    height: CHART_HEIGHT,
     minWidth: 720,
   },
   stripe: {
     marginRight: 1,
-    width: 5,
+    width: 6,
   },
   summary: {
     borderTopColor: '#cbd5e1',
