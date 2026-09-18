@@ -151,10 +151,13 @@ export default function ChartScreen() {
 
 const styles = StyleSheet.create({
   screen: {
+    alignSelf: 'center',
     flexGrow: 1,
+    maxWidth: 760,
     padding: 24,
     backgroundColor: '#f8fafc',
     gap: 24,
+    width: '100%',
   },
   header: {
     marginTop: 36,
