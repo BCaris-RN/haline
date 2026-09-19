@@ -52,11 +52,12 @@ export default function AboutScreen() {
           <Text style={styles.sectionTitle}>Citations</Text>
           <Text style={styles.citation}>
             Warner, M. J., & Weiss, R. F. (1985). Solubilities of chlorofluorocarbons 11 and 12 in water and seawater.
-            Deep Sea Research Part A, 32(12), 1485-1497.
+            <Text style={styles.citationItalic}> Deep Sea Research Part A</Text>, 32(12), 1485-1497.
           </Text>
           <Text style={styles.citation}>
-            Caris, B. W. The Coupled Marine Engine Framework, Papers 1-3. Zenodo preprint collection.
-            DOI: 10.5281/zenodo.20804280.
+            This app implements the thermal solubility layer only — a fixed-baseline simplification of the CFC air-sea flux model
+            described in Caris, B. W., <Text style={styles.citationItalic}>Chasing Ghosts on Land</Text> (Zenodo preprint, DOI:
+            10.5281/zenodo.20804280). It does not implement the coupled halogen chemistry or stratification layers of that work.
           </Text>
         </View>
 
@@ -122,6 +123,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 23,
     marginTop: 12,
+  },
+  citationItalic: {
+    fontStyle: 'italic',
   },
   linkRow: {
     borderBottomColor: '#e2e8f0',
