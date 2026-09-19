@@ -245,22 +245,25 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   detailRow: {
-    alignItems: 'baseline',
+    alignItems: 'flex-start',
     borderTopColor: '#e2e8f0',
     borderTopWidth: 1,
     flexDirection: 'row',
+    gap: 16,
     justifyContent: 'space-between',
     paddingTop: 14,
   },
   detailLabel: {
     color: '#64748b',
+    flexShrink: 0,
     fontSize: 14,
   },
   detailValue: {
     color: '#0f172a',
+    flex: 1,
+    flexShrink: 1,
     fontSize: 15,
     fontWeight: '600',
-    marginLeft: 16,
     textAlign: 'right',
   },
   emptyState: {

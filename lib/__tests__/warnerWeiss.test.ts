@@ -9,19 +9,58 @@ const SPECIES: CFCSpecies[] = ['cfc11', 'cfc12'];
  * https://water.usgs.gov/lab/chlorofluorocarbons/background/
  * These are equilibrium solubilities, not measured ocean uptake fluxes.
  */
-const REFERENCES = [
-  { species: 'cfc11', salinity: 0, kh: 0.016285757279746059 },
-  { species: 'cfc11', salinity: 35, kh: 0.011398160743979296 },
-  { species: 'cfc12', salinity: 0, kh: 0.0043470659342078685 },
-  { species: 'cfc12', salinity: 35, kh: 0.0030764838009911697 },
-] satisfies { species: CFCSpecies; salinity: number; kh: number }[];
+const GOLDEN_GRID = [
+  { species: 'cfc11' as const, temperature: 273.15, salinity: 0, kh: 0.0387122864010433345 },
+  { species: 'cfc11' as const, temperature: 273.15, salinity: 20, kh: 0.0312509441695431513 },
+  { species: 'cfc11' as const, temperature: 273.15, salinity: 35, kh: 0.0266148414710233126 },
+  { species: 'cfc11' as const, temperature: 273.15, salinity: 40, kh: 0.0252276887335071526 },
+  { species: 'cfc11' as const, temperature: 288.15, salinity: 0, kh: 0.0162857572797460587 },
+  { species: 'cfc11' as const, temperature: 288.15, salinity: 20, kh: 0.0132816445948992571 },
+  { species: 'cfc11' as const, temperature: 288.15, salinity: 35, kh: 0.0113981607439792961 },
+  { species: 'cfc11' as const, temperature: 288.15, salinity: 40, kh: 0.0108316782643322841 },
+  { species: 'cfc11' as const, temperature: 293.15, salinity: 0, kh: 0.0128799242786439154 },
+  { species: 'cfc11' as const, temperature: 293.15, salinity: 20, kh: 0.0105054459426462757 },
+  { species: 'cfc11' as const, temperature: 293.15, salinity: 35, kh: 0.00901654966683244068 },
+  { species: 'cfc11' as const, temperature: 293.15, salinity: 40, kh: 0.008568714541036339 },
+  { species: 'cfc11' as const, temperature: 298.15, salinity: 0, kh: 0.0104364329233885084 },
+  { species: 'cfc11' as const, temperature: 298.15, salinity: 20, kh: 0.00849964788635651449 },
+  { species: 'cfc11' as const, temperature: 298.15, salinity: 35, kh: 0.00728681210271199985 },
+  { species: 'cfc11' as const, temperature: 298.15, salinity: 40, kh: 0.00692228989755136823 },
+  { species: 'cfc11' as const, temperature: 313.15, salinity: 0, kh: 0.00633148660137209484 },
+  { species: 'cfc11' as const, temperature: 313.15, salinity: 20, kh: 0.00508323068851864626 },
+  { species: 'cfc11' as const, temperature: 313.15, salinity: 35, kh: 0.00431137118563123147 },
+  { species: 'cfc11' as const, temperature: 313.15, salinity: 40, kh: 0.00408106908527582395 },
+  { species: 'cfc12' as const, temperature: 273.15, salinity: 0, kh: 0.00941956021598128769 },
+  { species: 'cfc12' as const, temperature: 273.15, salinity: 20, kh: 0.00761964718437408771 },
+  { species: 'cfc12' as const, temperature: 273.15, salinity: 35, kh: 0.00649924695370059244 },
+  { species: 'cfc12' as const, temperature: 273.15, salinity: 40, kh: 0.00616366601869975231 },
+  { species: 'cfc12' as const, temperature: 288.15, salinity: 0, kh: 0.00434706593420786848 },
+  { species: 'cfc12' as const, temperature: 288.15, salinity: 20, kh: 0.00356780434798338643 },
+  { species: 'cfc12' as const, temperature: 288.15, salinity: 35, kh: 0.00307648380099116969 },
+  { species: 'cfc12' as const, temperature: 288.15, salinity: 40, kh: 0.00292823436730519799 },
+  { species: 'cfc12' as const, temperature: 293.15, salinity: 0, kh: 0.00352631946299570734 },
+  { species: 'cfc12' as const, temperature: 293.15, salinity: 20, kh: 0.00289892200199324257 },
+  { species: 'cfc12' as const, temperature: 293.15, salinity: 35, kh: 0.00250278006813891356 },
+  { species: 'cfc12' as const, temperature: 293.15, salinity: 40, kh: 0.00238315015466615979 },
+  { species: 'cfc12' as const, temperature: 298.15, salinity: 0, kh: 0.0029235462528519184 },
+  { species: 'cfc12' as const, temperature: 298.15, salinity: 20, kh: 0.00240347639240355091 },
+  { species: 'cfc12' as const, temperature: 298.15, salinity: 35, kh: 0.00207509163375627867 },
+  { species: 'cfc12' as const, temperature: 298.15, salinity: 40, kh: 0.00197592179812651163 },
+  { species: 'cfc12' as const, temperature: 313.15, salinity: 0, kh: 0.00187461402140621292 },
+  { species: 'cfc12' as const, temperature: 313.15, salinity: 20, kh: 0.00152656904310314595 },
+  { species: 'cfc12' as const, temperature: 313.15, salinity: 35, kh: 0.00130863910488151942 },
+  { species: 'cfc12' as const, temperature: 313.15, salinity: 40, kh: 0.00124314286394419003 },
+] satisfies { species: CFCSpecies; temperature: number; salinity: number; kh: number }[];
 
 describe('Warner–Weiss equilibrium CFC solubility', () => {
-  test.todo('matches a published K_H table value');
-
-  test.each(REFERENCES)('$species at 15°C, salinity $salinity matches the independent reference', ({ species, salinity, kh }) => {
-    expect(KH(288.15, salinity, species)).toBeCloseTo(kh, 13);
-    expect(lnKH(288.15, salinity, species)).toBeCloseTo(Math.log(kh), 11);
+  test.each(GOLDEN_GRID)('$species K_H at $temperature K, salinity $salinity matches the published coefficient table', ({
+    species,
+    temperature,
+    salinity,
+    kh,
+  }) => {
+    expect(KH(temperature, salinity, species)).toBeCloseTo(kh, 13);
+    expect(lnKH(temperature, salinity, species)).toBeCloseTo(Math.log(kh), 11);
   });
 
   test.each(SPECIES)('%s remains positive and decreases with temperature across the valid domain', (species) => {

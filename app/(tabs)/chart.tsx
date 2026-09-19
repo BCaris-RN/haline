@@ -309,6 +309,7 @@ const styles = StyleSheet.create({
   legend: {
     alignItems: 'center',
     flexDirection: 'row',
+    flexWrap: 'wrap',
     gap: 8,
   },
   legendSwatch: {
