@@ -1,7 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { getGateDecision } from '../../lib/gates';
 import { fetchNOAASSTData, NOAA_SOURCE, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
+import { useRevenueCat } from '../../lib/revenueCat';
 
 type ChartState =
   | { status: 'loading' }
@@ -58,7 +61,10 @@ function sourceLabel(data: NOAADataResult): string {
 }
 
 export default function ChartScreen() {
+  const router = useRouter();
+  const { entitlements, subscriptionsAvailable } = useRevenueCat();
   const [state, setState] = useState<ChartState>({ status: 'loading' });
+  const historyGate = getGateDecision('history', entitlements, subscriptionsAvailable);
 
   useEffect(() => {
     let mounted = true;
@@ -126,6 +132,26 @@ export default function ChartScreen() {
             <Text style={styles.stateText}>
               The monthly range is unavailable right now. {state.data.error ?? ''}
             </Text>
+          </View>
+        ) : historyGate.status === 'unavailable' ? (
+          <View style={styles.stateBlock}>
+            <Text style={styles.stateTitle}>Subscriptions unavailable</Text>
+            <Text style={styles.stateText}>{historyGate.message}</Text>
+          </View>
+        ) : historyGate.status === 'locked' ? (
+          <View style={styles.lockPanel}>
+            <Text style={styles.stateTitle}>Historical chart is part of Haline Pro</Text>
+            <Text style={styles.stateText}>
+              Free access keeps the dashboard and method notes available. Pro unlocks historical charting, export, and alerts.
+            </Text>
+            <View style={styles.lockRows}>
+              <Text style={styles.lockRow}>Locked: historical monthly chart</Text>
+              <Text style={styles.lockRow}>Locked: export</Text>
+              <Text style={styles.lockRow}>Locked: alerts</Text>
+            </View>
+            <Pressable onPress={() => router.push('/paywall')} style={styles.unlockButton}>
+              <Text style={styles.unlockButtonText}>Unlock Haline Pro</Text>
+            </Pressable>
           </View>
         ) : (
           <>
@@ -244,6 +270,34 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     marginTop: 8,
+  },
+  lockPanel: {
+    borderColor: '#cbd5e1',
+    borderRadius: 8,
+    borderWidth: 1,
+    padding: 18,
+  },
+  lockRows: {
+    gap: 8,
+    marginTop: 16,
+  },
+  lockRow: {
+    color: '#334155',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  unlockButton: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#0369a1',
+    borderRadius: 6,
+    marginTop: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  unlockButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontWeight: '700',
   },
   sourceBlock: {
     borderLeftColor: '#0284c7',
