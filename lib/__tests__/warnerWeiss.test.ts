@@ -16,24 +16,23 @@ type WarnerWeissCoefficients = {
 const SPECIES: CFCSpecies[] = ['cfc11', 'cfc12'];
 const COEFFICIENT_NAMES = ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'] as const;
 
-// TODO(Brandon): replace these zero placeholders with values hand-typed from
-// Caris (2026) section 2.3. Do not copy them from lib/warnerWeiss.ts.
+
 const CARIS_2026_SECTION_2_3_GRAVIMETRIC_COEFFICIENTS = {
   cfc11: {
-    a1: 0,
-    a2: 0,
-    a3: 0,
-    b1: 0,
-    b2: 0,
-    b3: 0,
+    a1: -136.2685,
+    a2: 206.1150,
+    a3: 57.2805,
+    b1: -0.148598,
+    b2: 0.095114,
+    b3: -0.0163396,
   },
   cfc12: {
-    a1: 0,
-    a2: 0,
-    a3: 0,
-    b1: 0,
-    b2: 0,
-    b3: 0,
+    a1: -124.4395,
+    a2: 185.4299,
+    a3: 51.6383,
+    b1: -0.149779,
+    b2: 0.094668,
+    b3: -0.0160043,
   },
 } satisfies Record<CFCSpecies, WarnerWeissCoefficients>;
 
