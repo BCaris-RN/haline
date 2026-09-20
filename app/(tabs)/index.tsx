@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { calculateCFCBias } from '../../lib/cfcBias';
+import { formatNOAAFetchedAt, noaaDataStatusLabel } from '../../lib/dataStatus';
 import { fetchNOAASSTData, getLatestRecord, type NOAADataResult, type NOAARecord } from '../../lib/noaa';
 
 type DashboardState =
@@ -17,25 +18,6 @@ function formatMonth(record: NOAARecord): string {
 function formatNextObservationMonth(record: NOAARecord): string {
   return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
     .format(new Date(Date.UTC(record.year, record.month, 1)));
-}
-
-function formatFetchedAt(value: number | null): string {
-  if (value === null) return 'No successful fetch yet';
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZoneName: 'short',
-  }).format(new Date(value));
-}
-
-function sourceLabel(data: NOAADataResult): string {
-  if (data.source === 'unavailable') return 'Unavailable';
-  if (data.isStale) return 'Stale cached NOAA data';
-  if (data.source === 'cache') return 'Cached NOAA data';
-  return 'Verified NOAA data';
 }
 
 function sourceDetail(data: NOAADataResult): string {
@@ -108,7 +90,7 @@ export default function DashboardScreen() {
         ) : (
           <View style={[styles.statusPanel, state.data.isStale && styles.stalePanel]}>
             <Text style={[styles.statusLabel, state.data.isStale && styles.staleText]}>
-              {sourceLabel(state.data)}
+              {noaaDataStatusLabel(state.data)}
             </Text>
             <Text style={styles.statusText}>{sourceDetail(state.data)}</Text>
           </View>
@@ -123,10 +105,10 @@ export default function DashboardScreen() {
             </View>
 
             <View style={styles.metricBlock}>
-              <Text style={styles.metricLabel}>CFC solubility shift %</Text>
+              <Text style={styles.metricLabel}>CFC solubility decrease</Text>
               <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
               <Text style={styles.metricMeta}>
-                Average of CFC-11 and CFC-12; vs 15°C, salinity 35 baseline
+                Average of CFC-11 and CFC-12, vs. 15 °C baseline.
               </Text>
             </View>
 
@@ -140,7 +122,7 @@ export default function DashboardScreen() {
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Cache fetched</Text>
-              <Text style={styles.detailValue}>{formatFetchedAt(state.data.fetchedAt)}</Text>
+              <Text style={styles.detailValue}>{formatNOAAFetchedAt(state.data.fetchedAt)}</Text>
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Expected next update</Text>
