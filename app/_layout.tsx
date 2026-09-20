@@ -1,5 +1,10 @@
 import { Stack } from 'expo-router';
+import { RevenueCatProvider } from '../lib/revenueCat';
 
 export default function RootLayout() {
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <RevenueCatProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </RevenueCatProvider>
+  );
 }
