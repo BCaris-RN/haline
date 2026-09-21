@@ -66,3 +66,12 @@ numbers and timestamps before use.
 | iOS release | Keep iOS as the primary submission target and prepare tester/device validation. | Store submission and tester enrollment are not done in this repo state. |
 | Notifications | Provision OneSignal/AWS and verify device delivery end to end. | Unit tests mock pushes; no live notification has been sent. |
 | Science scope | Keep the 17-state chemistry engine and OH-enhancement proxy out of this calculation. | Do not fabricate methane-lifetime results. |
+
+## Knowledge Library
+
+Published journal articles and applications are a part of decentralized learning objective to understand in depth, all that is Atmospheric Science.
+The link provided leads to the Project Cannon created in Gemini Notebook. Here you will find the outline of key disciplines needed to understand
+and appreciate this body of works and subsequent works created in the future. 
+
+Coupled Marine Engine Knowledge Library Wing 0 - Project Cannon (Start Here)
+https://notebook.google.com/notebook/a01ee6a5-d2a2-4a47-af5a-298ff785b41d
