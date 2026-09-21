@@ -73,5 +73,4 @@ Published journal articles and applications are a part of decentralized learning
 The link provided leads to the Project Cannon created in Gemini Notebook. Here you will find the outline of key disciplines needed to understand
 and appreciate this body of works and subsequent works created in the future. 
 
-Coupled Marine Engine Knowledge Library Wing 0 - Project Cannon (Start Here)
-https://notebook.google.com/notebook/a01ee6a5-d2a2-4a47-af5a-298ff785b41d
+[Coupled Marine Engine Knowledge Library Wing 0 - Project Cannon (Start Here)](https://notebook.google.com/notebook/a01ee6a5-d2a2-4a47-af5a-298ff785b41d)
