@@ -58,11 +58,11 @@ do not discard a successful response; an in-memory copy prevents repeated
 downloads during that app session. The cache validates source identity, dates,
 numbers and timestamps before use.
 
-## Next phase
+## What's next
 
-The dashboard, history chart and about screen can use these modules. Keep iOS as
-the primary submission target and the brief's Build in Public, Peace Prize and
-OneSignal priorities. The 17-state chemistry engine and its OH-enhancement proxy
-are outside this Day 1 calculation. No methane-lifetime result is fabricated.
-Store submission, tester enrollment, AWS provisioning and device notification
-delivery have not been performed by this code setup.
+| Track | Next step | Boundary |
+| --- | --- | --- |
+| App UI | Wire the dashboard, history chart and about screen to the tested NOAA/CFC modules. | Keep the output framed as a modeled thermal-solubility proxy. |
+| iOS release | Keep iOS as the primary submission target and prepare tester/device validation. | Store submission and tester enrollment are not done in this repo state. |
+| Notifications | Provision OneSignal/AWS and verify device delivery end to end. | Unit tests mock pushes; no live notification has been sent. |
+| Science scope | Keep the 17-state chemistry engine and OH-enhancement proxy out of this calculation. | Do not fabricate methane-lifetime results. |
