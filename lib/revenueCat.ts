@@ -76,28 +76,34 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
   }, [markUnavailable]);
 
   useEffect(() => {
-    let mounted = true;
+    let cancelled = false;
+    let listener: ((updatedInfo: CustomerInfo) => void) | null = null;
 
-    async function configureRevenueCat() {
-      const iosKey = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
-      if (Platform.OS !== 'ios') {
-        markUnavailable('Subscriptions require an iOS dev/EAS build. Expo Go is not a valid purchase test path.');
-        return;
-      }
-      if (!iosKey) {
-        markUnavailable('RevenueCat iOS key is not configured.');
-        return;
-      }
+    const iosKey = process.env.EXPO_PUBLIC_REVENUECAT_IOS_KEY;
+    if (Platform.OS !== 'ios') {
+      markUnavailable('Subscriptions require an iOS dev/EAS build. Expo Go is not a valid purchase test path.');
+      return () => { cancelled = true; };
+    }
+    if (!iosKey) {
+      markUnavailable('RevenueCat iOS key is not configured.');
+      return () => { cancelled = true; };
+    }
 
-      try {
-        Purchases.setLogLevel(LOG_LEVEL.WARN);
-        Purchases.configure({ apiKey: iosKey });
-        const listener = (updatedInfo: CustomerInfo) => {
-          if (mounted) setCustomerInfo(updatedInfo);
-        };
-        Purchases.addCustomerInfoUpdateListener(listener);
-        const loaded = await loadCustomerInfoAndOfferings();
-        if (!mounted) return;
+    try {
+      Purchases.setLogLevel(LOG_LEVEL.WARN);
+      Purchases.configure({ apiKey: iosKey });
+      listener = (updatedInfo: CustomerInfo) => {
+        if (!cancelled) setCustomerInfo(updatedInfo);
+      };
+      Purchases.addCustomerInfoUpdateListener(listener);
+    } catch (configureError) {
+      markUnavailable(configureError);
+      return () => { cancelled = true; };
+    }
+
+    void loadCustomerInfoAndOfferings()
+      .then((loaded) => {
+        if (cancelled) return;
         setCustomerInfo(loaded.customerInfo);
         setDefaultPackages(loaded.defaultPackages);
         setError(null);
@@ -105,18 +111,14 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
         if (loaded.defaultPackages.length === 0) {
           setError('Subscriptions unavailable, try again later.');
         }
-        return () => Purchases.removeCustomerInfoUpdateListener(listener);
-      } catch (configureError) {
-        if (mounted) markUnavailable(configureError);
-      }
-    }
-
-    let cleanup: (() => void) | undefined;
-    void configureRevenueCat().then((result) => { cleanup = result; });
+      })
+      .catch((loadError) => {
+        if (!cancelled) markUnavailable(loadError);
+      });
 
     return () => {
-      mounted = false;
-      cleanup?.();
+      cancelled = true;
+      if (listener) Purchases.removeCustomerInfoUpdateListener(listener);
     };
   }, [markUnavailable]);
 
