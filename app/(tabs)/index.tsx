@@ -105,7 +105,7 @@ export default function DashboardScreen() {
             </View>
 
             <View style={styles.metricBlock}>
-              <Text style={styles.metricLabel}>CFC solubility decrease</Text>
+              <Text style={styles.metricLabel}>CFC solubility shift %</Text>
               <Text style={styles.metricValue}>{cfcShift.toFixed(2)}%</Text>
               <Text style={styles.metricMeta}>
                 Average of CFC-11 and CFC-12, vs. 15 °C baseline.
