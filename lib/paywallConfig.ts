@@ -1,3 +1,3 @@
-export const TERMS_OF_USE_URL = 'https://example.com/haline/terms';
-export const PRIVACY_POLICY_URL = 'https://example.com/haline/privacy';
-export const CLASSROOM_PRICING_EMAIL = 'mailto:classroom@example.com?subject=Haline%20classroom%20pricing';
+export const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
+export const PRIVACY_URL = 'https://bcaris-rn.github.io/haline/privacy';
+export const CONTACT_EMAIL = '<<BRANDON_FILLS_IN>>';

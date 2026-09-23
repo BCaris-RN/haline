@@ -2,7 +2,7 @@ import { Stack } from 'expo-router';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { PurchasesPackage } from '@revenuecat/purchases-typescript-internal';
-import { CLASSROOM_PRICING_EMAIL, PRIVACY_POLICY_URL, TERMS_OF_USE_URL } from '../lib/paywallConfig';
+import { CONTACT_EMAIL, PRIVACY_URL, TERMS_URL } from '../lib/paywallConfig';
 import { useRevenueCat } from '../lib/revenueCat';
 
 function openUrl(url: string): void {
@@ -84,13 +84,13 @@ export default function PaywallScreen() {
         </Pressable>
 
         <View style={styles.links}>
-          <Pressable onPress={() => openUrl(TERMS_OF_USE_URL)}>
+          <Pressable onPress={() => openUrl(TERMS_URL)}>
             <Text style={styles.linkText}>Terms of Use</Text>
           </Pressable>
-          <Pressable onPress={() => openUrl(PRIVACY_POLICY_URL)}>
+          <Pressable onPress={() => openUrl(PRIVACY_URL)}>
             <Text style={styles.linkText}>Privacy Policy</Text>
           </Pressable>
-          <Pressable onPress={() => openUrl(CLASSROOM_PRICING_EMAIL)}>
+          <Pressable onPress={() => openUrl(CONTACT_EMAIL)}>
             <Text style={styles.linkText}>Students & teachers: classroom pricing coming soon — contact us</Text>
           </Pressable>
         </View>
