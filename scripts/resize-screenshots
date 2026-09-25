@@ -1,0 +1,61 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import sharp from 'sharp';
+
+const SOURCE_DIR = path.join('store-assets', 'screenshots');
+const OUTPUT_DIR = path.join('store-assets', 'ios', '6.9');
+const TARGET = { width: 1290, height: 2796 };
+const MAX_RATIO_DELTA = 0.001;
+
+function ratioDelta(source) {
+  const sourceRatio = source.width / source.height;
+  const targetRatio = TARGET.width / TARGET.height;
+  return Math.abs(sourceRatio - targetRatio) / targetRatio;
+}
+
+async function main() {
+  await fs.mkdir(OUTPUT_DIR, { recursive: true });
+  const entries = await fs.readdir(SOURCE_DIR, { withFileTypes: true });
+  const pngs = entries
+    .filter(entry => entry.isFile() && entry.name.toLowerCase().endsWith('.png'))
+    .map(entry => entry.name)
+    .sort();
+
+  if (pngs.length === 0) {
+    throw new Error(`No PNG screenshots found in ${SOURCE_DIR}`);
+  }
+
+  for (const fileName of pngs) {
+    const sourcePath = path.join(SOURCE_DIR, fileName);
+    const outputPath = path.join(OUTPUT_DIR, fileName);
+    const image = sharp(sourcePath);
+    const metadata = await image.metadata();
+
+    if (!metadata.width || !metadata.height) {
+      throw new Error(`Could not read dimensions for ${sourcePath}`);
+    }
+
+    const delta = ratioDelta({ width: metadata.width, height: metadata.height });
+    if (delta > MAX_RATIO_DELTA) {
+      throw new Error(
+        `${sourcePath} aspect ratio differs from 1290x2796 by ${(delta * 100).toFixed(3)}%; refusing to resize.`,
+      );
+    }
+
+    await image
+      .resize(TARGET.width, TARGET.height, {
+        fit: 'fill',
+        kernel: sharp.kernel.lanczos3,
+      })
+      .png({ compressionLevel: 9, adaptiveFiltering: true })
+      .toFile(outputPath);
+
+    const resized = await sharp(outputPath).metadata();
+    console.log(`${outputPath} ${resized.width}x${resized.height}`);
+  }
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});
