@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 import Purchases, { LOG_LEVEL } from 'react-native-purchases';

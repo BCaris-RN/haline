@@ -1,3 +1,8 @@
+<!--
+.-~-.  HALINE  ·  lib/warnerWeiss.ts
+Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+-->
+
 # Science and data provenance
 
 Verified September 15, 2026. This document records corrections to the supplied

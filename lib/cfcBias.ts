@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import { KH, type CFCSpecies } from './warnerWeiss';
 
 export const BASELINE_T_K = 288.15;

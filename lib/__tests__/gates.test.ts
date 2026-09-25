@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { EntitlementState } from '../entitlements';
 import type { GatedCapability } from '../gates';

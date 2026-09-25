@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import { createElement } from 'react';
 import { act, create, type ReactTestRenderer } from 'react-test-renderer';
 import { afterEach, describe, expect, test, vi } from 'vitest';

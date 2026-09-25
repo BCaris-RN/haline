@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import { useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';

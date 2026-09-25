@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 /** Shared, platform-independent NOAA contract for the mobile client and Lambda. */
 export const NOAA_SOURCE = {
   id: 'ncei-cag-global-ocean-monthly-1901-2000-v1',

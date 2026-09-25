@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   getNOAAEndpoint, NOAA_SOURCE, parseNOAAResponse, validateNOAARecords,

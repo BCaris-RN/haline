@@ -1,3 +1,8 @@
+<!--
+.-~-.  HALINE  ·  lib/warnerWeiss.ts
+Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+-->
+
 # Haline Roadmap
 
 Haline shows how ocean warming changes the sea's capacity to dissolve gases, computed from current NOAA monthly data using published solubility science.

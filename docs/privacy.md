@@ -3,6 +3,11 @@ title: Haline Privacy Policy
 permalink: /privacy
 ---
 
+<!--
+.-~-.  HALINE  ·  lib/warnerWeiss.ts
+Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+-->
+
 # Haline Privacy Policy
 
 Haline is a small ocean climate companion app. This policy explains what the app uses and what it does not do.

@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 /**
  * Warner & Weiss (1985), Solubilities of chlorofluorocarbons 11 and 12 in
  * water and seawater. Deep Sea Research Part A 32(12), 1485–1497.

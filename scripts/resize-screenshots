@@ -1,3 +1,6 @@
+// .-~-.  HALINE  ·  lib/warnerWeiss.ts
+// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
