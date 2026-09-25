@@ -4,7 +4,6 @@ export interface EntitlementState {
   hasPro: boolean;
   canViewHistory: boolean;
   canExport: boolean;
-  canUseAlerts: boolean;
 }
 
 export interface CustomerEntitlementSource {
@@ -20,6 +19,5 @@ export function entitlementsFromCustomerInfo(customerInfo: CustomerEntitlementSo
     hasPro,
     canViewHistory: hasPro,
     canExport: hasPro,
-    canUseAlerts: hasPro,
   };
 }

@@ -2,20 +2,18 @@ import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { EntitlementState } from '../entitlements';
 import type { GatedCapability } from '../gates';
 
-const CAPABILITIES: GatedCapability[] = ['history', 'export', 'alerts'];
+const CAPABILITIES: GatedCapability[] = ['history', 'export'];
 
 const entitled: EntitlementState = {
   hasPro: true,
   canViewHistory: true,
   canExport: true,
-  canUseAlerts: true,
 };
 
 const notEntitled: EntitlementState = {
   hasPro: false,
   canViewHistory: false,
   canExport: false,
-  canUseAlerts: false,
 };
 
 describe('gated capability decisions', () => {

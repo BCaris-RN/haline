@@ -17,7 +17,6 @@ describe('Haline Pro entitlement mapping', () => {
       hasPro: true,
       canViewHistory: true,
       canExport: true,
-      canUseAlerts: true,
     });
   });
 
@@ -26,7 +25,6 @@ describe('Haline Pro entitlement mapping', () => {
       hasPro: false,
       canViewHistory: false,
       canExport: false,
-      canUseAlerts: false,
     });
   });
 
@@ -35,7 +33,6 @@ describe('Haline Pro entitlement mapping', () => {
       hasPro: false,
       canViewHistory: false,
       canExport: false,
-      canUseAlerts: false,
     });
   });
 });

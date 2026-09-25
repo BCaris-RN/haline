@@ -1,6 +1,6 @@
 import type { EntitlementState } from './entitlements';
 
-export type GatedCapability = 'history' | 'export' | 'alerts';
+export type GatedCapability = 'history' | 'export';
 
 export type GateDecision =
   | { status: 'available' }
@@ -25,7 +25,6 @@ export function getGateDecision(
   const allowed = {
     history: entitlements.canViewHistory,
     export: entitlements.canExport,
-    alerts: entitlements.canUseAlerts,
   }[capability];
 
   return allowed ? { status: 'available' } : { status: 'locked' };

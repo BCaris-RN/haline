@@ -9,6 +9,10 @@ function openUrl(url: string): void {
   void Linking.openURL(url);
 }
 
+function openEmail(email: string): void {
+  void Linking.openURL(`mailto:${email}`);
+}
+
 function formatBillingPeriod(period: string | null): string {
   if (!period) return 'one-time access';
   const normalized = period.toUpperCase();
@@ -59,7 +63,7 @@ export default function PaywallScreen() {
         <Text style={styles.kicker}>Haline Pro</Text>
         <Text style={styles.title}>Unlock historical ocean context</Text>
         <Text style={styles.body}>
-          Pro unlocks historical charting, export, and alerts. The dashboard and method notes remain free.
+          Pro unlocks historical charting and export. The dashboard and method notes remain free.
         </Text>
 
         {!subscriptionsAvailable || packagesToShow.length === 0 ? (
@@ -90,7 +94,7 @@ export default function PaywallScreen() {
           <Pressable onPress={() => openUrl(PRIVACY_URL)}>
             <Text style={styles.linkText}>Privacy Policy</Text>
           </Pressable>
-          <Pressable onPress={() => openUrl(CONTACT_EMAIL)}>
+          <Pressable onPress={() => openEmail(CONTACT_EMAIL)}>
             <Text style={styles.linkText}>Students & teachers: classroom pricing coming soon — contact us</Text>
           </Pressable>
         </View>

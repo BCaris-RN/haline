@@ -129,12 +129,11 @@ export default function ChartScreen() {
           <View style={styles.lockPanel}>
             <Text style={styles.stateTitle}>Historical chart is part of Haline Pro</Text>
             <Text style={styles.stateText}>
-              Free access keeps the dashboard and method notes available. Pro unlocks historical charting, export, and alerts.
+              Free access keeps the dashboard and method notes available. Pro unlocks historical charting and export.
             </Text>
             <View style={styles.lockRows}>
               <Text style={styles.lockRow}>Locked: historical monthly chart</Text>
               <Text style={styles.lockRow}>Locked: export</Text>
-              <Text style={styles.lockRow}>Locked: alerts</Text>
             </View>
             <Pressable onPress={() => router.push('/paywall')} style={styles.unlockButton}>
               <Text style={styles.unlockButtonText}>Unlock Haline Pro</Text>
