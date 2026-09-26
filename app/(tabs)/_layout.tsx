@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  app/(tabs)/_layout.tsx
+// Expo tab navigator configuration for the Haline app.
 
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';

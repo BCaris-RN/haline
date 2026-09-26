@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/noaaData.ts
+// Shared NOAA endpoint, parser, and validation contract.
 
 /** Shared, platform-independent NOAA contract for the mobile client and Lambda. */
 export const NOAA_SOURCE = {

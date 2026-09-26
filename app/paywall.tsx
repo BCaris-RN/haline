@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  app/paywall.tsx
+// Paywall screen for Pro offerings, restore, and legal links.
 
 import { Stack } from 'expo-router';
 import { Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';

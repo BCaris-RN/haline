@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  scripts/resize-screenshots
+// Sharp-based App Store screenshot resizing utility.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';

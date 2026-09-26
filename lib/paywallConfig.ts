@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/paywallConfig.ts
+// Paywall terms, privacy, and support contact configuration.
 
 export const TERMS_URL = 'https://www.apple.com/legal/internet-services/itunes/dev/stdeula/';
 export const PRIVACY_URL = 'https://bcaris-rn.github.io/haline/privacy';

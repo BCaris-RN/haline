@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/__tests__/cfcBias.test.ts
+// Unit tests for CFC solubility shift calculations.
 
 import { describe, expect, test } from 'vitest';
 import { cfcUptakeReductionPercent, calculateCFCBias } from '../cfcBias';

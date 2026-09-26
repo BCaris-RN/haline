@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/__tests__/dataStatus.test.ts
+// Unit tests for NOAA data status labels.
 
 import { describe, expect, test } from 'vitest';
 import { noaaDataStatusLabel } from '../dataStatus';

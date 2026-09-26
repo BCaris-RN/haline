@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  backend/lambda/weekly-notification.js
+// Weekly notification Lambda for latest NOAA anomaly summaries.
 
 // @ts-check
 

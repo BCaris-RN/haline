@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/cfcBias.ts
+// CFC solubility shift calculations built on Warner-Weiss solubility.
 
 import { KH, type CFCSpecies } from './warnerWeiss';
 

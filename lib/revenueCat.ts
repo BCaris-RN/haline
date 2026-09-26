@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/revenueCat.ts
+// RevenueCat provider and hook for offerings, purchases, and entitlements.
 
 import { createContext, createElement, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform } from 'react-native';
@@ -29,6 +29,10 @@ const RevenueCatContext = createContext<RevenueCatContextValue | null>(null);
 
 function unavailableMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Subscriptions unavailable, try again later.';
+}
+
+function isUserCancelled(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'userCancelled' in error && error.userCancelled === true;
 }
 
 function packagesFromOfferings(offerings: PurchasesOfferings): PurchasesPackage[] {
@@ -131,9 +135,10 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
       setCustomerInfo(result.customerInfo);
       await refreshCustomerInfo();
     } catch (purchaseError) {
-      markUnavailable(purchaseError);
+      if (isUserCancelled(purchaseError)) return;
+      setError('Purchase could not be completed. Please try again.');
     }
-  }, [markUnavailable, refreshCustomerInfo]);
+  }, [refreshCustomerInfo]);
 
   const restorePurchases = useCallback(async () => {
     try {
@@ -141,9 +146,10 @@ export function RevenueCatProvider({ children }: { children: ReactNode }) {
       setCustomerInfo(restoredInfo);
       await refreshCustomerInfo();
     } catch (restoreError) {
-      markUnavailable(restoreError);
+      if (isUserCancelled(restoreError)) return;
+      setError('Purchases could not be restored. Please try again.');
     }
-  }, [markUnavailable, refreshCustomerInfo]);
+  }, [refreshCustomerInfo]);
 
   const value = useMemo<RevenueCatContextValue>(() => ({
     status,

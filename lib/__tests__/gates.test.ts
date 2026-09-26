@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/__tests__/gates.test.ts
+// Regression tests for entitlement feature gate decisions.
 
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import type { EntitlementState } from '../entitlements';

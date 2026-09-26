@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/__tests__/noaa.test.ts
+// Unit tests for NOAA client caching and response handling.
 
 import { afterEach, describe, expect, test, vi } from 'vitest';
 

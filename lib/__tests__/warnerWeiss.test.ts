@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  lib/__tests__/warnerWeiss.test.ts
+// Unit tests for Warner-Weiss solubility and CFC shift calculations.
 
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';

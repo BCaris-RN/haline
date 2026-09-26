@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  backend/lambda/__tests__/weekly-notification.test.ts
+// Regression tests for the weekly notification Lambda.
 
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { calculateCFCBias } from '../../../lib/cfcBias';

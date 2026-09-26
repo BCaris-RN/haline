@@ -1,5 +1,5 @@
-// .-~-.  HALINE  ·  lib/warnerWeiss.ts
-// Warner-Weiss K_H(T,S) solubility. See Caris (2026) § 2.3.
+// .-~-.  HALINE  ·  vitest.config.ts
+// Vitest configuration for Haline unit and regression tests.
 
 import { defineConfig } from 'vitest/config';
 
