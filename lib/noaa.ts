@@ -41,6 +41,10 @@ export interface NOAAClientOptions {
   timeoutMs?: number;
 }
 
+export interface FetchNOAAOptions {
+  forceRefresh?: boolean;
+}
+
 function readCache(raw: string | null, now: number): CachedData | null {
   if (raw === null) return null;
   const value: unknown = JSON.parse(raw);
@@ -80,7 +84,7 @@ export function createNOAAClient(options: NOAAClientOptions) {
   let memoryCache: CachedData | null = null;
   let inFlight: Promise<NOAADataResult> | null = null;
 
-  async function load(): Promise<NOAADataResult> {
+  async function load(fetchOptions: FetchNOAAOptions = {}): Promise<NOAADataResult> {
     const startedAt = now();
     // Reject future timestamps after device-clock changes.
     let cache = memoryCache && memoryCache.timestamp <= startedAt ? memoryCache : null;
@@ -91,7 +95,7 @@ export function createNOAAClient(options: NOAAClientOptions) {
         // A corrupt or unavailable cache must not prevent a network recovery.
       }
     }
-    if (cache && startedAt - cache.timestamp < NOAA_CACHE_VALIDITY_MS) {
+    if (!fetchOptions.forceRefresh && cache && startedAt - cache.timestamp < NOAA_CACHE_VALIDITY_MS) {
       memoryCache = cache;
       return cacheResult(cache, startedAt);
     }
@@ -136,7 +140,12 @@ export function createNOAAClient(options: NOAAClientOptions) {
     };
   }
 
-  function fetchNOAASSTData(): Promise<NOAADataResult> {
+  function fetchNOAASSTData(fetchOptions: FetchNOAAOptions = {}): Promise<NOAADataResult> {
+    if (fetchOptions.forceRefresh) {
+      return load(fetchOptions).then(result => ({
+        ...result, records: result.records.map(record => ({ ...record })),
+      }));
+    }
     if (!inFlight) {
       inFlight = load().finally(() => { inFlight = null; });
     }

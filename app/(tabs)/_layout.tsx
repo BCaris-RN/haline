@@ -24,9 +24,30 @@ export default function TabsLayout() {
         tabBarStyle: { backgroundColor: '#ffffff' },
       }}
     >
-      <Tabs.Screen name="index" options={{ tabBarIcon: tabIcon('speedometer-outline'), title: 'Dashboard' }} />
-      <Tabs.Screen name="chart" options={{ tabBarIcon: tabIcon('analytics-outline'), title: 'Chart' }} />
-      <Tabs.Screen name="about" options={{ tabBarIcon: tabIcon('information-circle-outline'), title: 'About' }} />
+      <Tabs.Screen
+        name="index"
+        options={{
+          tabBarAccessibilityLabel: 'Dashboard tab',
+          tabBarIcon: tabIcon('speedometer-outline'),
+          title: 'Dashboard',
+        }}
+      />
+      <Tabs.Screen
+        name="chart"
+        options={{
+          tabBarAccessibilityLabel: 'Chart tab',
+          tabBarIcon: tabIcon('analytics-outline'),
+          title: 'Chart',
+        }}
+      />
+      <Tabs.Screen
+        name="about"
+        options={{
+          tabBarAccessibilityLabel: 'About tab',
+          tabBarIcon: tabIcon('information-circle-outline'),
+          title: 'About',
+        }}
+      />
     </Tabs>
   );
 }

@@ -50,6 +50,10 @@ function formatRange(records: readonly NOAARecord[]): string {
   return `Chart window: ${formatMonth(first)} to ${formatMonth(last)}`;
 }
 
+function warmingStripesLabel(records: readonly NOAARecord[], average: number, warmest: NOAARecord): string {
+  return `Warming stripes, ${records.length} months, average anomaly ${average.toFixed(2)} degrees Celsius, warmest month ${formatMonth(warmest)}`;
+}
+
 export default function ChartScreen() {
   const router = useRouter();
   const { entitlements, subscriptionsAvailable } = useRevenueCat();
@@ -153,7 +157,15 @@ export default function ChartScreen() {
               </Text>
             </View>
 
-            <View style={styles.stripeWrap}>
+            <View
+              accessibilityLabel={
+                summary
+                  ? warmingStripesLabel(state.records, summary.average, summary.warmest)
+                  : undefined
+              }
+              accessible
+              style={styles.stripeWrap}
+            >
               {state.records.map(record => (
                 <View
                   key={record.date}
